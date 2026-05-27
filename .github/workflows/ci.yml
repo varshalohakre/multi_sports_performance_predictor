@@ -1,0 +1,105 @@
+name: Multi-Sport Predictor CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile app.py
+
+      - name: Check model files exist
+        run: |
+          test -f cricket_model.pkl
+          test -f basketball_model.pkl
+          test -f football_model.pkl
+
+      - name: Verify model loading
+        run: |
+          python - <<EOF
+          import joblib
+
+          cricket_model = joblib.load("cricket_model.pkl")
+          basketball_model = joblib.load("basketball_model.pkl")
+          football_model = joblib.load("football_model.pkl")
+
+          print("All models loaded successfully.")
+          EOF
+
+      - name: Verify sample predictions
+        run: |
+          python - <<EOF
+          import joblib
+          import pandas as pd
+
+          cricket_model = joblib.load("cricket_model.pkl")
+          basketball_model = joblib.load("basketball_model.pkl")
+          football_model = joblib.load("football_model.pkl")
+
+          cricket_input = pd.DataFrame(
+              [[30, 4, 2]],
+              columns=["balls", "fours", "sixes"]
+          )
+
+          basketball_input = pd.DataFrame(
+              [[20, 5, 7, 34]],
+              columns=[
+                  "past_avg_pts",
+                  "past_avg_ast",
+                  "past_avg_trb",
+                  "past_avg_mp"
+              ]
+          )
+
+          football_input = pd.DataFrame(
+              [[2500, 12.5, 7.8, 35, 55, 80, 120, 95, 110, 35, 20, 4, 0]],
+              columns=[
+                  "Min",
+                  "xG",
+                  "xAG",
+                  "SoT",
+                  "KP",
+                  "PrgC",
+                  "PrgP",
+                  "PrgR",
+                  "SCA",
+                  "Tkl",
+                  "Int",
+                  "CrdY",
+                  "CrdR"
+              ]
+          )
+
+          cricket_prediction = cricket_model.predict(cricket_input)
+          basketball_prediction = basketball_model.predict(basketball_input)
+          football_prediction = football_model.predict(football_input)
+
+          assert cricket_prediction[0] >= 0
+          assert basketball_prediction[0] >= 0
+          assert football_prediction[0] >= 0
+
+          print("Sample predictions completed successfully.")
+          EOF
