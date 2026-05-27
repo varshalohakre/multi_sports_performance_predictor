@@ -74,7 +74,7 @@ Output:
 
 Model R² score:
 
-```text
+
 0.412
 
 ## Football
