@@ -103,7 +103,7 @@ The football model predicts fantasy-style performance using attacking, creative,
 
 ### Model R² Score
 
-```text
+
 0.961
 
 **Machine Learning Approach**
@@ -175,10 +175,11 @@ multi_sport_predictor/
 └── README.md
 
 **How to Run Locally**
+
 1. Clone the Repository
 ```bash git clone <your-repository-link>
-2. Move into the Project Folder
-```bash cd multi_sport_predictor
+
+2. Move into the P
 3. Install Dependencies
 ```bash pip install -r requirements.txt
 4. Run the Streamlit App
