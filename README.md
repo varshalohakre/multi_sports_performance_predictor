@@ -177,14 +177,14 @@ multi_sport_predictor/
 **How to Run Locally**
 
 1. Clone the Repository
-bash git clone <your-repository-link>
+```bash git clone <your-repository-link> ```
 
 2. Move into the Project folder
-bash cd multi_sport_predictor
+```bash cd multi_sport_predictor```
 3. Install Dependencies
-bash pip install -r requirements.txt
+```bash pip install -r requirements.txt```
 4. Run the Streamlit App
-bash streamlit run app.py
+```bash streamlit run app.py```
 
 **Requirements**
 streamlit
